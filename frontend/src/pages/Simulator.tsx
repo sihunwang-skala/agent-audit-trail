@@ -33,8 +33,8 @@ export default function Simulator({ delegationId, refresh, setTxFocus, goto }: S
         <div className="grid gap-2 md:grid-cols-3">
           {scenarios.map((s) => (
             <div key={s.name} className="rounded border border-slate-200 p-3">
-              <div className="font-medium">{s.title}</div>
-              <p className="mb-2 text-xs text-slate-500">{s.description}</p>
+              <div className="font-medium">{t(s.title)}</div>
+              <p className="mb-2 text-xs text-slate-500">{t(s.description)}</p>
               <Btn kind="primary" disabled={!delegationId || busy} onClick={() => run(s.name)}>Run</Btn>
             </div>
           ))}
@@ -67,7 +67,7 @@ export default function Simulator({ delegationId, refresh, setTxFocus, goto }: S
       )}
       {catalog && (
         <Card title="Mock merchant catalog (synthetic, simulated)">
-          <table className="w-full text-xs"><thead><tr className="text-left text-slate-500"><th>Product</th><th>Merchant</th><th>Category</th><th>Price</th><th>Free returns</th><th>Delivery</th><th>Cancellable</th></tr></thead>
+          <table className="w-full text-xs"><thead><tr className="text-left text-slate-500"><th>{t("Product")}</th><th>{t("Merchant")}</th><th>{t("Category")}</th><th>{t("Price")}</th><th>{t("Free returns")}</th><th>{t("Delivery")}</th><th>{t("Cancellable")}</th></tr></thead>
             <tbody>{catalog.products.map((p: any) => (
               <tr key={p.product_id} className="border-t border-slate-100"><td>{p.product_id}: {p.name}</td><td>{p.merchant_id}</td><td>{p.category}</td><td>{krw(p.unit_price_krw)}</td><td>{String(p.free_returns)}</td><td>{p.delivery_days}d</td><td>{String(p.cancellable)}</td></tr>))}</tbody></table>
         </Card>

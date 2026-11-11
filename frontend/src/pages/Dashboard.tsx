@@ -23,7 +23,7 @@ export default function Dashboard({ tick, goto }: Shared) {
       <Card title="Recent receipts" right={<button className="text-sm text-indigo-700" onClick={() => goto("Receipt Explorer")}>{t("Open explorer")}</button>}>
         {s.recent_receipts.length === 0 ? <p className="text-sm text-slate-500">{t("No receipts yet. Create a delegation, then run the Agent Simulator.")}</p> : (
           <table className="w-full text-sm">
-            <thead><tr className="text-left text-xs text-slate-500"><th className="pr-3">#</th><th className="pr-3">Time</th><th>Event</th><th>Decision</th><th>Status</th><th>Evidence level</th></tr></thead>
+            <thead><tr className="text-left text-xs text-slate-500"><th className="pr-3">#</th><th className="pr-3">{t("Time")}</th><th>{t("Event")}</th><th>{t("Decision")}</th><th>{t("Status")}</th><th>{t("Evidence level")}</th></tr></thead>
             <tbody>
               {s.recent_receipts.map((r: any) => (
                 <tr key={r.receipt_id} className="border-t border-slate-100">
