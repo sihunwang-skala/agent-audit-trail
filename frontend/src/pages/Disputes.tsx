@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { api, krw, post } from "../api";
 import type { Shared } from "../App";
 import { Badge, Btn, Card, ErrorNote } from "../ui";
+import { useT } from "../i18n";
 
 export default function Disputes({ tick, refresh, txFocus }: Shared) {
+  const t = useT();
   const [txs, setTxs] = useState<any[]>([]);
   const [disputes, setDisputes] = useState<any[]>([]);
   const [txId, setTxId] = useState(txFocus);
@@ -26,7 +28,7 @@ export default function Disputes({ tick, refresh, txFocus }: Shared) {
       <div className="space-y-3">
         <Card title="1. Select a transaction">
           <select aria-label="Transaction" className="w-full rounded border border-slate-300 p-1 text-sm" value={txId} onChange={(e) => setTxId(e.target.value)}>
-            <option value="">Choose…</option>
+            <option value="">{t("Choose…")}</option>
             {txs.map((t) => <option key={t.transaction_id} value={t.transaction_id}>{t.transaction_id} · {t.product_id} · {t.status}</option>)}
           </select>
           <textarea aria-label="Dispute reason" className="mt-2 w-full rounded border border-slate-300 p-1 text-sm" rows={2} value={reason} onChange={(e) => setReason(e.target.value)} />
@@ -34,7 +36,7 @@ export default function Disputes({ tick, refresh, txFocus }: Shared) {
           <ErrorNote error={err} />
         </Card>
         <Card title="Disputes">
-          {disputes.length === 0 && <p className="text-sm text-slate-500">None yet.</p>}
+          {disputes.length === 0 && <p className="text-sm text-slate-500">{t("None yet.")}</p>}
           {disputes.map((d) => (
             <button key={d.dispute_id} onClick={() => { setDispute(d); setOutcome(null); }} className="mb-1 block w-full rounded border border-slate-200 p-2 text-left text-xs">
               {d.dispute_id} <Badge>{d.status}</Badge><div className="text-slate-500">{d.transaction_id}</div>
@@ -43,7 +45,7 @@ export default function Disputes({ tick, refresh, txFocus }: Shared) {
         </Card>
       </div>
       <div className="space-y-3 md:col-span-2">
-        {!analysis && <Card><p className="text-sm text-slate-500">Open or select a dispute to compare evidence.</p></Card>}
+        {!analysis && <Card><p className="text-sm text-slate-500">{t("Open or select a dispute to compare evidence.")}</p></Card>}
         {analysis && dispute && (
           <>
             <Card title={`Dispute ${analysis.dispute_id}`} right={<Badge>{analysis.dispute_status}</Badge>}>
@@ -51,11 +53,11 @@ export default function Disputes({ tick, refresh, txFocus }: Shared) {
               <p className="mt-2 rounded bg-slate-100 p-2 text-sm"><b>Responsibility: {analysis.responsibility.determination}.</b> {analysis.responsibility.note}</p>
             </Card>
             <Card title="Violated conditions">
-              {analysis.violated_conditions.length === 0 ? <p className="text-sm text-slate-500">None recorded.</p> :
+              {analysis.violated_conditions.length === 0 ? <p className="text-sm text-slate-500">{t("None recorded.")}</p> :
                 <ul className="list-disc pl-5 text-sm text-red-700">{analysis.violated_conditions.map((v: any, i: number) => <li key={i}><b>{v.code}</b>: {v.message}</li>)}</ul>}
             </Card>
             <Card title="Discrepancies between sources">
-              {analysis.discrepancies.length === 0 ? <p className="text-sm text-slate-500">None detected.</p> : (
+              {analysis.discrepancies.length === 0 ? <p className="text-sm text-slate-500">{t("None detected.")}</p> : (
                 <table className="w-full text-sm [&_td]:pr-4 [&_td]:py-1 [&_td]:align-top [&_th]:pr-4"><thead><tr className="text-left text-xs text-slate-500"><th>Stage</th><th>Field</th><th>Expected</th><th>Observed</th></tr></thead>
                   <tbody>{analysis.discrepancies.map((d: any, i: number) => (
                     <tr key={i} className="border-t border-slate-100"><td>{d.stage}</td><td>{d.field}</td><td>{String(d.expected)}<div className="text-xs text-slate-500">{d.expected_source}</div></td><td>{String(d.observed)}<div className="text-xs text-slate-500">{d.observed_source}</div></td></tr>))}</tbody></table>)}

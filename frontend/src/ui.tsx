@@ -1,11 +1,13 @@
 import { ReactNode } from "react";
+import { useT } from "./i18n";
 
 export function Card({ title, children, right }: { title?: string; children: ReactNode; right?: ReactNode }) {
+  const t = useT();
   return (
     <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
       {(title || right) && (
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-slate-700">{title}</h2>
+          <h2 className="text-sm font-semibold text-slate-700">{title ? t(title) : title}</h2>
           {right}
         </div>
       )}
@@ -33,10 +35,11 @@ export function Json({ data }: { data: unknown }) {
 }
 
 export function Btn(props: React.ButtonHTMLAttributes<HTMLButtonElement> & { kind?: "primary" | "danger" | "plain" }) {
-  const { kind = "plain", className = "", ...rest } = props;
+  const t = useT();
+  const { kind = "plain", className = "", children, ...rest } = props;
   const k = { primary: "bg-indigo-600 text-white hover:bg-indigo-700", danger: "bg-red-600 text-white hover:bg-red-700",
               plain: "border border-slate-300 bg-white hover:bg-slate-50" }[kind];
-  return <button {...rest} className={`rounded px-3 py-1.5 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50 ${k} ${className}`} />;
+  return <button {...rest} className={`rounded px-3 py-1.5 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50 ${k} ${className}`}>{typeof children === "string" ? t(children) : children}</button>;
 }
 
 export function ErrorNote({ error }: { error: string | null }) {

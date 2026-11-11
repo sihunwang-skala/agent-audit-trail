@@ -6,6 +6,7 @@ import Simulator from "./pages/Simulator";
 import Receipts from "./pages/Receipts";
 import Disputes from "./pages/Disputes";
 import { Btn } from "./ui";
+import { LangProvider, useLang, useT } from "./i18n";
 
 const TABS = ["Dashboard", "Delegation", "Agent Simulator", "Receipt Explorer", "Dispute & Recovery"] as const;
 type Tab = (typeof TABS)[number];
@@ -19,6 +20,12 @@ function readHash(): { tab: Tab; d: string; tx: string } {
 }
 
 export default function App() {
+  return <LangProvider><AppInner /></LangProvider>;
+}
+
+function AppInner() {
+  const t = useT();
+  const { lang, setLang } = useLang();
   const initial = readHash();
   const [tab, setTab] = useState<Tab>(initial.tab);
   const [delegationId, setDelegationId] = useState<string>(initial.d);
@@ -42,19 +49,24 @@ export default function App() {
   return (
     <div className="min-h-screen">
       <div className="bg-amber-100 px-4 py-2 text-center text-xs font-medium text-amber-900" role="note">
-        DEMO / MOCK DATA ONLY: simulated merchant, no real payments or personal data. Approvals happen on a Demo Trusted Surface and are not
-        cryptographically signed by the user. AgentTrust does not determine legal responsibility.
+        {t("DEMO / MOCK DATA ONLY: simulated merchant, no real payments or personal data. Approvals happen on a Demo Trusted Surface and are not cryptographically signed by the user. AgentTrust does not determine legal responsibility.")}
       </div>
       <header className="flex flex-wrap items-center gap-4 border-b border-slate-200 bg-white px-6 py-3">
         <h1 className="text-lg font-bold">AgentTrust</h1>
         <nav className="flex flex-wrap gap-1">
-          {TABS.map((t) => (
-            <button key={t} onClick={() => setTab(t)} aria-current={tab === t}
-              className={`rounded px-3 py-1.5 text-sm ${tab === t ? "bg-indigo-600 text-white" : "hover:bg-slate-100"}`}>{t}</button>
+          {TABS.map((name) => (
+            <button key={name} onClick={() => setTab(name)} aria-current={tab === name}
+              className={`rounded px-3 py-1.5 text-sm ${tab === name ? "bg-indigo-600 text-white" : "hover:bg-slate-100"}`}>{t(name)}</button>
           ))}
         </nav>
+        <div className="ml-auto flex overflow-hidden rounded border border-slate-300 text-xs" role="group" aria-label="Language">
+          {(["en", "ko"] as const).map((l) => (
+            <button key={l} onClick={() => setLang(l)} aria-pressed={lang === l}
+              className={`px-2.5 py-1 ${lang === l ? "bg-slate-800 text-white" : "bg-white hover:bg-slate-50"}`}>{l === "en" ? "EN" : "한국어"}</button>
+          ))}
+        </div>
         {health?.demo_reset_enabled && (
-          <Btn className="ml-auto" kind="danger" onClick={async () => {
+          <Btn kind="danger" onClick={async () => {
             if (confirm("Delete ALL demo data (delegations, receipts, disputes)?")) { await api("/demo/reset", { method: "POST" }); setDelegationId(""); refresh(); }
           }}>Reset demo data</Btn>
         )}

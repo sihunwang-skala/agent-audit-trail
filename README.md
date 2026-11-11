@@ -8,7 +8,7 @@ AI 에이전트의 행동을 결정론적 정책 게이트웨이, 서명된 해�
 ![Status: research prototype](https://img.shields.io/badge/status-research%20prototype-orange)
 ![Data: synthetic only](https://img.shields.io/badge/data-synthetic%20only-blue)
 ![Payments: none](https://img.shields.io/badge/real%20payments-none-red)
-![Tests](https://img.shields.io/badge/tests-67%20backend%20%2B%204%20UI-brightgreen)
+![Tests](https://img.shields.io/badge/tests-67%20backend%20%2B%205%20UI-brightgreen)
 
 > **EN** Local research prototype. All data is synthetic and the merchant is simulated. No real payments, cards, personal data, guarantees or insurance. Not for production, not legal advice, and not a legal-responsibility decision-maker.
 >
@@ -74,7 +74,12 @@ Captured from the running demo with synthetic data. · 가상 데이터로 실�
 **EN** Evidence by party, source discrepancies (quoted 80,000 KRW vs charged 95,000 KRW), facts that are *not* established, and a simulated cancellation. Responsibility is always `NOT_DETERMINED`.
 **KO** 당사자별 증거, 출처 간 불일치(견적 80,000원 vs 청구 95,000원), *확정되지 않은* 사실, 모의 취소를 보여줍니다. 책임 판단은 항상 `NOT_DETERMINED`입니다.
 
-> The UI is currently English only. · 현재 UI 텍스트는 영어만 지원합니다.
+### Korean UI · 한국어 화면
+![Dashboard (Korean)](docs/screenshots/05-dashboard-ko.png)
+![Dispute and Recovery (Korean)](docs/screenshots/06-dispute-recovery-ko.png)
+
+> **EN** Use the **EN / 한국어** switch in the header. Only navigation, titles, main buttons and key notices are translated; codes, evidence levels, receipt data and API messages stay in English on purpose.
+> **KO** 헤더의 **EN / 한국어** 버튼으로 전환합니다. 메뉴, 제목, 주요 버튼, 핵심 안내만 번역하며 코드·증거 등급·영수증 데이터·API 메시지는 의도적으로 영어로 둡니다.
 
 ## Capabilities · 기능
 
@@ -91,8 +96,8 @@ Captured from the running demo with synthetic data. · 가상 데이터로 실�
 
 ## Verification · 검증
 
-**EN** 67 backend tests (pytest) and 4 UI tests (vitest). Adversarial cases are in [`backend/tests/test_adversarial.py`](backend/tests/test_adversarial.py).
-**KO** 백엔드 67개(pytest), UI 4개(vitest) 테스트가 있습니다. 공격 시나리오는 [`test_adversarial.py`](backend/tests/test_adversarial.py)에 있습니다.
+**EN** 67 backend tests (pytest) and 5 UI tests (vitest). Adversarial cases are in [`backend/tests/test_adversarial.py`](backend/tests/test_adversarial.py).
+**KO** 백엔드 67개(pytest), UI 5개(vitest) 테스트가 있습니다. 공격 시나리오는 [`test_adversarial.py`](backend/tests/test_adversarial.py)에 있습니다.
 
 | Scenario · 시나리오 | Result · 결과 | Status · 상태 |
 |---|---|---|

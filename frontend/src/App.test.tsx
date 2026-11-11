@@ -86,3 +86,16 @@ test("dispute analysis never shows a responsibility verdict and disables cancel 
   expect(screen.getByText("The merchant outcome is unknown")).toBeInTheDocument();
   expect(screen.getByRole("button", { name: /Request cancellation/ })).toBeDisabled();
 });
+
+test("language switch translates navigation and notices, keeps codes in English, and persists", async () => {
+  mockApi(empty);
+  const user = userEvent.setup();
+  render(<App />);
+  await user.click(screen.getByRole("button", { name: "한국어" }));
+  expect(screen.getByRole("note")).toHaveTextContent(/데모 \/ 가상 데이터 전용/);
+  expect(screen.getByRole("button", { name: "영수증 탐색기" })).toBeInTheDocument();
+  expect(await screen.findByText("진행 중 분쟁")).toBeInTheDocument();
+  expect(window.localStorage.getItem("agenttrust.lang")).toBe("ko");
+  await user.click(screen.getByRole("button", { name: "EN" }));
+  expect(screen.getByRole("button", { name: "Receipt Explorer" })).toBeInTheDocument();
+});

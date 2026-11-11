@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { api } from "../api";
 import type { Shared } from "../App";
 import { Badge, Btn, Card, ErrorNote, Json } from "../ui";
+import { useT } from "../i18n";
 
 const VERIFIED = ["GATEWAY_VERIFIED", "MERCHANT_CONFIRMED"];
 
 export default function Receipts({ tick, txFocus, setTxFocus }: Shared) {
+  const t = useT();
   const [rs, setRs] = useState<any[]>([]);
   const [sel, setSel] = useState<any>(null);
   const [ver, setVer] = useState<any>(null);
@@ -39,7 +41,7 @@ export default function Receipts({ tick, txFocus, setTxFocus }: Shared) {
               </button>
             </li>
           ))}
-          {rs.length === 0 && <p className="text-sm text-slate-500">No receipts.</p>}
+          {rs.length === 0 && <p className="text-sm text-slate-500">{t("No receipts.")}</p>}
         </ol>
         <div className="mt-3 flex flex-wrap gap-2"><Btn onClick={verifyChain}>Verify whole chain</Btn><Btn onClick={download}>Export JSON</Btn></div>
         {chain && <p className={`mt-2 text-sm ${chain.valid ? "text-green-700" : "text-red-700"}`}>{chain.valid ? `Chain valid (${chain.receipt_count} receipts)` : `Chain INVALID: ${JSON.stringify(chain.problems)}`}</p>}
@@ -66,13 +68,13 @@ export default function Receipts({ tick, txFocus, setTxFocus }: Shared) {
                 {sel.evidence_references.filter((e: any) => VERIFIED.includes(e.level)).map((e: any) => (
                   <div key={e.evidence_id} className="mb-2 text-sm"><Badge>{e.level}</Badge> {e.summary}</div>
                 ))}
-                <p className="text-xs text-slate-500">Merchant confirmation comes from a simulated merchant. PAYMENT_CONFIRMED does not exist in this MVP.</p>
+                <p className="text-xs text-slate-500">{t("Merchant confirmation comes from a simulated merchant. PAYMENT_CONFIRMED does not exist in this MVP.")}</p>
               </Card>
               <Card title="Unverified claims / unknowns">
                 {sel.evidence_references.filter((e: any) => !VERIFIED.includes(e.level)).map((e: any) => (
                   <div key={e.evidence_id} className="mb-2 text-sm"><Badge>{e.level}</Badge> {e.summary}</div>
                 ))}
-                {sel.evidence_references.every((e: any) => VERIFIED.includes(e.level)) && <p className="text-sm text-slate-500">None recorded in this receipt.</p>}
+                {sel.evidence_references.every((e: any) => VERIFIED.includes(e.level)) && <p className="text-sm text-slate-500">{t("None recorded in this receipt.")}</p>}
               </Card>
             </div>
             <Card title="Signature & hash verification" right={<Btn kind="primary" onClick={() => verify(sel)}>Verify this receipt</Btn>}>

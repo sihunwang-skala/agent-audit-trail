@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { api, krw, post } from "../api";
 import type { Shared } from "../App";
 import { Badge, Btn, Card, ErrorNote } from "../ui";
+import { useT } from "../i18n";
 
 export default function Simulator({ delegationId, refresh, setTxFocus, goto }: Shared) {
+  const t = useT();
   const [scenarios, setScenarios] = useState<any[]>([]);
   const [catalog, setCatalog] = useState<any>(null);
   const [result, setResult] = useState<any>(null);
@@ -26,7 +28,7 @@ export default function Simulator({ delegationId, refresh, setTxFocus, goto }: S
       <Card title="Mock Agent scenarios">
         <p className="mb-3 text-sm text-slate-600">
           {delegationId ? <>Acting under delegation <code>{delegationId}</code>. The mock agent calls the same Gateway API a real agent would.</>
-            : "Create and approve a delegation first (Delegation tab), then select it."}
+            : t("Create and approve a delegation first (Delegation tab), then select it.")}
         </p>
         <div className="grid gap-2 md:grid-cols-3">
           {scenarios.map((s) => (

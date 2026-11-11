@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { api, krw, post } from "../api";
 import type { Shared } from "../App";
 import { Badge, Btn, Card, ErrorNote } from "../ui";
+import { useT } from "../i18n";
 
 const DEFAULTS = {
   agent_id: "agent_demo", total_budget_krw: 300000, per_item_max_krw: 200000, allowed_categories: "Electronics",
@@ -10,6 +11,7 @@ const DEFAULTS = {
 };
 
 export default function Delegation({ delegationId, setDelegationId, tick, refresh }: Shared) {
+  const t = useT();
   const [list, setList] = useState<any[]>([]);
   const [form, setForm] = useState<any>(DEFAULTS);
   const [err, setErr] = useState<string | null>(null);
@@ -32,12 +34,12 @@ export default function Delegation({ delegationId, setDelegationId, tick, refres
   }); };
 
   const field = (label: string, k: string, type = "text") => (
-    <label className="block text-sm">{label}
+    <label className="block text-sm">{t(label)}
       <input className="mt-1 w-full rounded border border-slate-300 px-2 py-1" type={type} value={form[k]} onChange={(e) => set(k, e.target.value)} />
     </label>
   );
   const check = (label: string, k: string) => (
-    <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form[k]} onChange={(e) => set(k, e.target.checked)} />{label}</label>
+    <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form[k]} onChange={(e) => set(k, e.target.checked)} />{t(label)}</label>
   );
 
   return (
@@ -57,23 +59,23 @@ export default function Delegation({ delegationId, setDelegationId, tick, refres
             <Btn type="submit" kind="primary">{reviseFor ? "Create new version (pending)" : "Create delegation (pending)"}</Btn>
             {reviseFor && <Btn type="button" onClick={() => setReviseFor(null)}>Cancel</Btn>}
           </div>
-          <p className="text-xs text-slate-500">A delegation has no effect until you explicitly approve it. Approval is recorded on the Demo Trusted Surface and is NOT a cryptographic signature by you.</p>
+          <p className="text-xs text-slate-500">{t("A delegation has no effect until you explicitly approve it. Approval is recorded on the Demo Trusted Surface and is NOT a cryptographic signature by you.")}</p>
         </form>
         <ErrorNote error={err} />
       </Card>
       <div className="space-y-3">
-        {list.length === 0 && <Card><p className="text-sm text-slate-500">No delegations yet.</p></Card>}
+        {list.length === 0 && <Card><p className="text-sm text-slate-500">{t("No delegations yet.")}</p></Card>}
         {list.map((d) => (
           <Card key={d.delegation_id} title={`${d.delegation_id} · v${d.version}`} right={<Badge>{d.status}</Badge>}>
             <dl className="grid grid-cols-2 gap-1 text-sm">
-              <dt className="text-slate-500">Agent</dt><dd>{d.agent_id}</dd>
-              <dt className="text-slate-500">Budget</dt><dd>{krw(d.total_budget_krw)} (spent {krw(d.spent_krw)}, left {krw(d.remaining_krw)})</dd>
-              <dt className="text-slate-500">Per item max</dt><dd>{krw(d.per_item_max_krw)}</dd>
-              <dt className="text-slate-500">Categories</dt><dd>{d.allowed_categories.join(", ")}</dd>
-              <dt className="text-slate-500">Merchants</dt><dd>{d.allowed_merchants.join(", ")}</dd>
-              <dt className="text-slate-500">Free returns</dt><dd>{d.require_free_returns ? "required" : "not required"}</dd>
-              <dt className="text-slate-500">Auto purchase</dt><dd>{d.auto_purchase_allowed ? "allowed" : "approval per action"}</dd>
-              <dt className="text-slate-500">Expires</dt><dd>{d.expires_at ?? `${d.valid_for_minutes} min after approval`}</dd>
+              <dt className="text-slate-500">{t("Agent")}</dt><dd>{d.agent_id}</dd>
+              <dt className="text-slate-500">{t("Budget")}</dt><dd>{krw(d.total_budget_krw)} (spent {krw(d.spent_krw)}, left {krw(d.remaining_krw)})</dd>
+              <dt className="text-slate-500">{t("Per item max")}</dt><dd>{krw(d.per_item_max_krw)}</dd>
+              <dt className="text-slate-500">{t("Categories")}</dt><dd>{d.allowed_categories.join(", ")}</dd>
+              <dt className="text-slate-500">{t("Merchants")}</dt><dd>{d.allowed_merchants.join(", ")}</dd>
+              <dt className="text-slate-500">{t("Free returns")}</dt><dd>{d.require_free_returns ? "required" : "not required"}</dd>
+              <dt className="text-slate-500">{t("Auto purchase")}</dt><dd>{d.auto_purchase_allowed ? "allowed" : "approval per action"}</dd>
+              <dt className="text-slate-500">{t("Expires")}</dt><dd>{d.expires_at ?? `${d.valid_for_minutes} min after approval`}</dd>
             </dl>
             <div className="mt-3 flex flex-wrap gap-2">
               {d.status === "PENDING_APPROVAL" && <Btn kind="primary" onClick={() => run(async () => { await post(`/delegations/${d.delegation_id}/approve`); setDelegationId(d.delegation_id); })}>Approve (demo surface)</Btn>}
