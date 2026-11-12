@@ -18,4 +18,11 @@ export async function api<T = any>(path: string, init?: RequestInit): Promise<T>
 export const post = <T = any>(path: string, data?: unknown) =>
   api<T>(path, { method: "POST", body: data === undefined ? undefined : JSON.stringify(data) });
 
-export const krw = (n: number | null | undefined) => (n == null ? "-" : `${n.toLocaleString("en-US")} KRW`);
+export const krw = (n: number | null | undefined) => {
+  if (n == null) return "-";
+  let lang = "en";
+  try { lang = window.localStorage.getItem("agenttrust.lang") ?? "en"; } catch { /* storage unavailable */ }
+  return lang === "ko"
+    ? new Intl.NumberFormat("ko-KR", { style: "currency", currency: "KRW", maximumFractionDigits: 0 }).format(n)
+    : `${n.toLocaleString("en-US")} KRW`;
+};

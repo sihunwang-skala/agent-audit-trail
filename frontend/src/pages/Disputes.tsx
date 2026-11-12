@@ -9,7 +9,7 @@ export default function Disputes({ tick, refresh, txFocus }: Shared) {
   const [txs, setTxs] = useState<any[]>([]);
   const [disputes, setDisputes] = useState<any[]>([]);
   const [txId, setTxId] = useState(txFocus);
-  const [reason, setReason] = useState("This purchase looks wrong");
+  const [reason, setReason] = useState(t("This purchase looks wrong"));
   const [dispute, setDispute] = useState<any>(null);
   const [analysis, setAnalysis] = useState<any>(null);
   const [outcome, setOutcome] = useState<string | null>(null);
@@ -27,11 +27,11 @@ export default function Disputes({ tick, refresh, txFocus }: Shared) {
     <div className="grid gap-4 md:grid-cols-3">
       <div className="space-y-3">
         <Card title="1. Select a transaction">
-          <select aria-label="Transaction" className="w-full rounded border border-slate-300 p-1 text-sm" value={txId} onChange={(e) => setTxId(e.target.value)}>
+          <select aria-label={t("Transaction")} className="w-full rounded border border-slate-300 p-1 text-sm" value={txId} onChange={(e) => setTxId(e.target.value)}>
             <option value="">{t("Choose…")}</option>
-            {txs.map((t) => <option key={t.transaction_id} value={t.transaction_id}>{t.transaction_id} · {t.product_id} · {t.status}</option>)}
+            {txs.map((tx) => <option key={tx.transaction_id} value={tx.transaction_id}>{tx.transaction_id} · {t(tx.product_id)} · {t(tx.status)}</option>)}
           </select>
-          <textarea aria-label="Dispute reason" className="mt-2 w-full rounded border border-slate-300 p-1 text-sm" rows={2} value={reason} onChange={(e) => setReason(e.target.value)} />
+          <textarea aria-label={t("Dispute reason")} className="mt-2 w-full rounded border border-slate-300 p-1 text-sm" rows={2} value={reason} onChange={(e) => setReason(e.target.value)} />
           <Btn kind="primary" className="mt-2" disabled={!txId || !reason} onClick={open}>Open dispute</Btn>
           <ErrorNote error={err} />
         </Card>
@@ -49,36 +49,36 @@ export default function Disputes({ tick, refresh, txFocus }: Shared) {
         {analysis && dispute && (
           <>
             <Card title={`Dispute ${analysis.dispute_id}`} right={<Badge>{analysis.dispute_status}</Badge>}>
-              <p className="text-sm">Transaction <code>{analysis.transaction_id}</code> is <Badge>{analysis.transaction_status}</Badge>. Failed stage: <b>{analysis.failed_stage ?? "none detected"}</b></p>
-              <p className="mt-2 rounded bg-slate-100 p-2 text-sm"><b>Responsibility: {analysis.responsibility.determination}.</b> {analysis.responsibility.note}</p>
+              <p className="text-sm">{t("Transaction ")}<code>{analysis.transaction_id}</code>{t(" is ")}<Badge>{analysis.transaction_status}</Badge>. {t("Failed stage: ")}<b>{t(analysis.failed_stage ?? "none detected")}</b></p>
+              <p className="mt-2 rounded bg-slate-100 p-2 text-sm"><b>{t("Responsibility: ")}{t(analysis.responsibility.determination)}.</b> {t(analysis.responsibility.note)}</p>
             </Card>
             <Card title="Violated conditions">
               {analysis.violated_conditions.length === 0 ? <p className="text-sm text-slate-500">{t("None recorded.")}</p> :
-                <ul className="list-disc pl-5 text-sm text-red-700">{analysis.violated_conditions.map((v: any, i: number) => <li key={i}><b>{v.code}</b>: {v.message}</li>)}</ul>}
+                <ul className="list-disc pl-5 text-sm text-red-700">{analysis.violated_conditions.map((v: any, i: number) => <li key={i}><b>{t(v.code)}</b>: {t(v.message)}</li>)}</ul>}
             </Card>
             <Card title="Discrepancies between sources">
               {analysis.discrepancies.length === 0 ? <p className="text-sm text-slate-500">{t("None detected.")}</p> : (
                 <table className="w-full text-sm [&_td]:pr-4 [&_td]:py-1 [&_td]:align-top [&_th]:pr-4"><thead><tr className="text-left text-xs text-slate-500"><th>{t("Stage")}</th><th>{t("Field")}</th><th>{t("Expected")}</th><th>{t("Observed")}</th></tr></thead>
                   <tbody>{analysis.discrepancies.map((d: any, i: number) => (
-                    <tr key={i} className="border-t border-slate-100"><td>{d.stage}</td><td>{d.field}</td><td>{String(d.expected)}<div className="text-xs text-slate-500">{d.expected_source}</div></td><td>{String(d.observed)}<div className="text-xs text-slate-500">{d.observed_source}</div></td></tr>))}</tbody></table>)}
+                    <tr key={i} className="border-t border-slate-100"><td>{t(d.stage)}</td><td>{t(d.field)}</td><td>{t(String(d.expected))}<div className="text-xs text-slate-500">{t(d.expected_source)}</div></td><td>{t(String(d.observed))}<div className="text-xs text-slate-500">{t(d.observed_source)}</div></td></tr>))}</tbody></table>)}
             </Card>
             <Card title="Evidence by party">
               <div className="grid gap-2 md:grid-cols-2">
                 {Object.entries(analysis.evidence_by_party).map(([party, items]: [string, any]) => (
-                  <div key={party} className="rounded border border-slate-200 p-2"><div className="text-xs font-semibold uppercase text-slate-500">{party}</div>
-                    {items.length === 0 ? <p className="text-xs text-slate-400">no evidence</p> : items.map((e: any, i: number) => <div key={i} className="text-xs"><Badge>{e.level}</Badge> {e.summary}</div>)}</div>
+                  <div key={party} className="rounded border border-slate-200 p-2"><div className="text-xs font-semibold uppercase text-slate-500">{t(party)}</div>
+                    {items.length === 0 ? <p className="text-xs text-slate-400">{t("no evidence")}</p> : items.map((e: any, i: number) => <div key={i} className="text-xs"><Badge>{e.level}</Badge> {t(e.summary)}</div>)}</div>
                 ))}
               </div>
             </Card>
-            <Card title="Not established (unknowns)"><ul className="list-disc pl-5 text-sm text-slate-700">{analysis.unknown_facts.map((u: string, i: number) => <li key={i}>{u}</li>)}</ul></Card>
+            <Card title="Not established (unknowns)"><ul className="list-disc pl-5 text-sm text-slate-700">{analysis.unknown_facts.map((u: string, i: number) => <li key={i}>{t(u)}</li>)}</ul></Card>
             <Card title="Recovery (simulated)">
-              <p className="text-sm">Cancellation possible: <b>{analysis.cancellation.possible ? "yes (merchant may still reject)" : "no"}</b>. {analysis.cancellation.reason}</p>
+              <p className="text-sm">{t("Cancellation possible: ")}<b>{t(analysis.cancellation.possible ? "yes (merchant may still reject)" : "cancellation unavailable")}</b>. {t(analysis.cancellation.reason)}</p>
               <div className="mt-2 flex gap-2">
                 <Btn kind="danger" disabled={!analysis.cancellation.possible || dispute.status !== "OPEN"} onClick={cancel}>Request cancellation from mock merchant</Btn>
                 <Btn disabled={dispute.status !== "OPEN"} onClick={close}>Close dispute</Btn>
               </div>
-              {outcome && <p className="mt-2 text-sm">Merchant result: <Badge>{outcome}</Badge> (no real refund, chargeback or insurance payout exists in this MVP)</p>}
-              <p className="mt-1 text-xs text-slate-500">Charged: {krw(txs.find((t) => t.transaction_id === analysis.transaction_id)?.charged_krw)}</p>
+              {outcome && <p className="mt-2 text-sm">{t("Merchant result: ")}<Badge>{outcome}</Badge>{t(" (no real refund, chargeback or insurance payout exists in this MVP)")}</p>}
+              <p className="mt-1 text-xs text-slate-500">{t("Charged: ")}{krw(txs.find((tx) => tx.transaction_id === analysis.transaction_id)?.charged_krw)}</p>
             </Card>
           </>
         )}
