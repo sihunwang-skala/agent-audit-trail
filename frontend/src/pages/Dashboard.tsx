@@ -27,8 +27,8 @@ export default function Dashboard({ tick, goto }: Shared) {
             <tbody>
               {s.recent_receipts.map((r: any) => (
                 <tr key={r.receipt_id} className="border-t border-slate-100">
-                  <td className="pr-3">{r.seq}</td><td className="whitespace-nowrap pr-3 text-xs">{r.timestamp}</td><td>{r.event_type}</td>
-                  <td><Badge>{r.policy_decision}</Badge></td><td>{r.execution_status}</td><td><Badge>{r.verification_level}</Badge></td>
+                  <td className="pr-3">{r.seq}</td><td className="whitespace-nowrap pr-3 text-xs">{new Intl.DateTimeFormat("ko-KR", { dateStyle: "medium", timeStyle: "short" }).format(new Date(r.timestamp))}</td><td>{t(r.event_type)}</td>
+                  <td><Badge>{r.policy_decision}</Badge></td><td>{t(r.execution_status)}</td><td><Badge>{r.verification_level}</Badge></td>
                 </tr>
               ))}
             </tbody>

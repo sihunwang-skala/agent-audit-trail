@@ -44,7 +44,7 @@ export default function Delegation({ delegationId, setDelegationId, tick, refres
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      <Card title={reviseFor ? `New version of ${reviseFor}` : "Create delegation"}>
+      <Card title={reviseFor ? `${t("New version of")} ${reviseFor}` : "Create delegation"}>
         <form onSubmit={submit} className="space-y-3">
           {field("Agent ID", "agent_id")}
           {field("Total budget (KRW)", "total_budget_krw", "number")}
@@ -69,13 +69,13 @@ export default function Delegation({ delegationId, setDelegationId, tick, refres
           <Card key={d.delegation_id} title={`${d.delegation_id} · v${d.version}`} right={<Badge>{d.status}</Badge>}>
             <dl className="grid grid-cols-2 gap-1 text-sm">
               <dt className="text-slate-500">{t("Agent")}</dt><dd>{d.agent_id}</dd>
-              <dt className="text-slate-500">{t("Budget")}</dt><dd>{krw(d.total_budget_krw)} (spent {krw(d.spent_krw)}, left {krw(d.remaining_krw)})</dd>
+              <dt className="text-slate-500">{t("Budget")}</dt><dd>{krw(d.total_budget_krw)} ({t("spent ")}{krw(d.spent_krw)}{t(", left ")}{krw(d.remaining_krw)})</dd>
               <dt className="text-slate-500">{t("Per item max")}</dt><dd>{krw(d.per_item_max_krw)}</dd>
-              <dt className="text-slate-500">{t("Categories")}</dt><dd>{d.allowed_categories.join(", ")}</dd>
+              <dt className="text-slate-500">{t("Categories")}</dt><dd>{d.allowed_categories.map((x: string) => t(x)).join(", ")}</dd>
               <dt className="text-slate-500">{t("Merchants")}</dt><dd>{d.allowed_merchants.join(", ")}</dd>
-              <dt className="text-slate-500">{t("Free returns")}</dt><dd>{d.require_free_returns ? "required" : "not required"}</dd>
-              <dt className="text-slate-500">{t("Auto purchase")}</dt><dd>{d.auto_purchase_allowed ? "allowed" : "approval per action"}</dd>
-              <dt className="text-slate-500">{t("Expires")}</dt><dd>{d.expires_at ?? `${d.valid_for_minutes} min after approval`}</dd>
+              <dt className="text-slate-500">{t("Free returns")}</dt><dd>{t(d.require_free_returns ? "required" : "not required")}</dd>
+              <dt className="text-slate-500">{t("Auto purchase")}</dt><dd>{t(d.auto_purchase_allowed ? "allowed" : "approval per action")}</dd>
+              <dt className="text-slate-500">{t("Expires")}</dt><dd>{d.expires_at ?? `${d.valid_for_minutes}${t(" min after approval")}`}</dd>
             </dl>
             <div className="mt-3 flex flex-wrap gap-2">
               {d.status === "PENDING_APPROVAL" && <Btn kind="primary" onClick={() => run(async () => { await post(`/delegations/${d.delegation_id}/approve`); setDelegationId(d.delegation_id); })}>Approve (demo surface)</Btn>}

@@ -31,12 +31,12 @@ export default function Receipts({ tick, txFocus, setTxFocus }: Shared) {
 
   return (
     <div className="grid gap-4 md:grid-cols-6">
-      <div className="md:col-span-2"><Card title={txFocus ? `Receipts for ${txFocus}` : "All receipts (hash chain order)"} right={txFocus ? <Btn onClick={() => setTxFocus("")}>Show all</Btn> : undefined}>
+      <div className="md:col-span-2"><Card title={txFocus ? `${t("Receipts for")} ${txFocus}` : "All receipts (hash chain order)"} right={txFocus ? <Btn onClick={() => setTxFocus("")}>Show all</Btn> : undefined}>
         <ol className="space-y-1">
           {rs.map((r) => (
             <li key={r.receipt_id}>
               <button onClick={() => { setSel(r); setVer(null); }} className={`w-full rounded border p-2 text-left text-xs ${sel?.receipt_id === r.receipt_id ? "border-indigo-500 bg-indigo-50" : "border-slate-200"}`}>
-                <div className="font-medium">#{r.seq} {r.event_type}</div>
+                <div className="font-medium">#{r.seq} {t(r.event_type)}</div>
                 <div className="flex gap-1"><Badge>{r.policy_decision}</Badge><Badge>{r.verification_level}</Badge></div>
               </button>
             </li>
@@ -50,29 +50,29 @@ export default function Receipts({ tick, txFocus, setTxFocus }: Shared) {
         <ErrorNote error={err} />
         {sel && (
           <>
-            <Card title={`Receipt ${sel.receipt_id}`} right={<div className="flex gap-1"><Btn onClick={() => setView("timeline")}>Timeline</Btn><Btn onClick={() => setView("json")}>JSON</Btn></div>}>
+            <Card title={`${t("Receipt")} ${sel.receipt_id}`} right={<div className="flex gap-1"><Btn onClick={() => setView("timeline")}>Timeline</Btn><Btn onClick={() => setView("json")}>JSON</Btn></div>}>
               {view === "json" ? <Json data={sel} /> : (
                 <div className="space-y-2 text-sm">
-                  <div className="flex flex-wrap gap-2"><Badge>{sel.policy_decision}</Badge><span>{sel.execution_status}</span><span className="text-xs text-slate-500">{sel.timestamp}</span></div>
-                  <div>Action: <code>{sel.requested_action}</code> {sel.action_parameters?.product_id && <>on <code>{sel.action_parameters.product_id}</code></>} · agent <code>{sel.agent_id}</code> · delegation <code>{sel.delegation_id}</code> v{sel.delegation_version}</div>
+                  <div className="flex flex-wrap gap-2"><Badge>{sel.policy_decision}</Badge><span>{t(sel.execution_status)}</span><span className="text-xs text-slate-500">{new Intl.DateTimeFormat("ko-KR", { dateStyle: "medium", timeStyle: "medium" }).format(new Date(sel.timestamp))}</span></div>
+                  <div>{t("Action")}: <code>{t(sel.requested_action)}</code> {sel.action_parameters?.product_id && <>{t(" on ")}<code>{t(sel.action_parameters.product_id)}</code></>} {t(" · agent ")}<code>{sel.agent_id}</code> {t(" · delegation ")}<code>{sel.delegation_id}</code> v{sel.delegation_version}</div>
                   {sel.policy_reason?.violations?.length > 0 ? (
-                    <div><b>Policy reasons (violations):</b><ul className="list-disc pl-5 text-red-700">{sel.policy_reason.violations.map((v: any, i: number) => <li key={i}>{v.code}: {v.message}</li>)}</ul></div>
-                  ) : sel.policy_reason?.checks && <p className="text-green-700">All {sel.policy_reason.checks.length} deterministic checks passed.</p>}
-                  {sel.policy_reason?.note && <p className="text-slate-600">{sel.policy_reason.note}</p>}
-                  {sel.merchant_response && <p className="text-xs">Merchant response (<b>SIMULATED</b>) type: <code>{sel.merchant_response.payload.type}</code></p>}
+                    <div><b>{t("Policy reasons (violations):")}</b><ul className="list-disc pl-5 text-red-700">{sel.policy_reason.violations.map((v: any, i: number) => <li key={i}>{t(v.code)}: {t(v.message)}</li>)}</ul></div>
+                  ) : sel.policy_reason?.checks && <p className="text-green-700">{t("All ")}{sel.policy_reason.checks.length}{t(" deterministic checks passed.")}</p>}
+                  {sel.policy_reason?.note && <p className="text-slate-600">{t(sel.policy_reason.note)}</p>}
+                  {sel.merchant_response && <p className="text-xs">{t("Merchant response (")}<b>{t("SIMULATED")}</b>{t(") type: ")}<code>{t(sel.merchant_response.payload.type)}</code></p>}
                 </div>
               )}
             </Card>
             <div className="grid gap-3 md:grid-cols-2">
               <Card title="Verifiable evidence">
                 {sel.evidence_references.filter((e: any) => VERIFIED.includes(e.level)).map((e: any) => (
-                  <div key={e.evidence_id} className="mb-2 text-sm"><Badge>{e.level}</Badge> {e.summary}</div>
+                  <div key={e.evidence_id} className="mb-2 text-sm"><Badge>{e.level}</Badge> {t(e.summary)}</div>
                 ))}
                 <p className="text-xs text-slate-500">{t("Merchant confirmation comes from a simulated merchant. PAYMENT_CONFIRMED does not exist in this MVP.")}</p>
               </Card>
               <Card title="Unverified claims / unknowns">
                 {sel.evidence_references.filter((e: any) => !VERIFIED.includes(e.level)).map((e: any) => (
-                  <div key={e.evidence_id} className="mb-2 text-sm"><Badge>{e.level}</Badge> {e.summary}</div>
+                  <div key={e.evidence_id} className="mb-2 text-sm"><Badge>{e.level}</Badge> {t(e.summary)}</div>
                 ))}
                 {sel.evidence_references.every((e: any) => VERIFIED.includes(e.level)) && <p className="text-sm text-slate-500">{t("None recorded in this receipt.")}</p>}
               </Card>
@@ -81,10 +81,10 @@ export default function Receipts({ tick, txFocus, setTxFocus }: Shared) {
               <p className="break-all text-xs text-slate-600">hash {sel.current_hash}<br />prev {sel.previous_hash}</p>
               {ver && (
                 <ul className="mt-2 text-sm">
-                  <li>Hash matches content: <b>{String(ver.hash_valid)}</b></li><li>Ed25519 signature valid: <b>{String(ver.signature_valid)}</b></li>
-                  <li>Chain link to previous receipt: <b>{String(ver.chain_link_valid)}</b></li>
-                  <li>Merchant signature (simulated): <b>{ver.merchant_signature_valid === null ? "n/a" : String(ver.merchant_signature_valid)}</b></li>
-                  <li className="text-xs text-slate-500">{ver.note}. Offline: <code>python verifier/agenttrust_verify.py export.json --public-key …</code></li>
+                  <li>{t("Hash matches content: ")}<b>{t(String(ver.hash_valid))}</b></li><li>{t("Ed25519 signature valid: ")}<b>{t(String(ver.signature_valid))}</b></li>
+                  <li>{t("Chain link to previous receipt: ")}<b>{t(String(ver.chain_link_valid))}</b></li>
+                  <li>{t("Merchant signature (simulated): ")}<b>{ver.merchant_signature_valid === null ? t("n/a") : t(String(ver.merchant_signature_valid))}</b></li>
+                  <li className="text-xs text-slate-500">{t(ver.note)}. {t("Offline")}: <code>python verifier/agenttrust_verify.py export.json --public-key …</code></li>
                 </ul>
               )}
             </Card>

@@ -27,7 +27,8 @@ const tone: Record<string, string> = {
 };
 
 export function Badge({ children }: { children: string }) {
-  return <span className={`rounded px-2 py-0.5 text-xs font-medium ${tone[children] ?? "bg-slate-100 text-slate-700"}`}>{children}</span>;
+  const t = useT();
+  return <span className={`rounded px-2 py-0.5 text-xs font-medium ${tone[children] ?? "bg-slate-100 text-slate-700"}`}>{t(children)}</span>;
 }
 
 export function Json({ data }: { data: unknown }) {
@@ -43,5 +44,6 @@ export function Btn(props: React.ButtonHTMLAttributes<HTMLButtonElement> & { kin
 }
 
 export function ErrorNote({ error }: { error: string | null }) {
-  return error ? <p role="alert" className="mt-2 rounded bg-red-50 p-2 text-sm text-red-700">{error}</p> : null;
+  const t = useT();
+  return error ? <p role="alert" className="mt-2 rounded bg-red-50 p-2 text-sm text-red-700">{t(error)}</p> : null;
 }

@@ -46,6 +46,10 @@ function AppInner() {
   useEffect(() => { api("/health").then(setHealth).catch(() => setHealth(null)); }, []);
 
   const shared = { delegationId, setDelegationId, tick, refresh, txFocus, setTxFocus, goto: (t: Tab) => setTab(t) };
+  useEffect(() => {
+    document.documentElement.lang = lang;
+    document.title = lang === "ko" ? "AgentTrust: AI 에이전트 신뢰 계층 (데모)" : "AgentTrust: AI Agent Trust Layer (demo)";
+  }, [lang]);
   return (
     <div className="min-h-screen">
       <div className="bg-amber-100 px-4 py-2 text-center text-xs font-medium text-amber-900" role="note">
@@ -59,7 +63,7 @@ function AppInner() {
               className={`rounded px-3 py-1.5 text-sm ${tab === name ? "bg-indigo-600 text-white" : "hover:bg-slate-100"}`}>{t(name)}</button>
           ))}
         </nav>
-        <div className="ml-auto flex overflow-hidden rounded border border-slate-300 text-xs" role="group" aria-label="Language">
+        <div className="ml-auto flex overflow-hidden rounded border border-slate-300 text-xs" role="group" aria-label={t("Language")}>
           {(["en", "ko"] as const).map((l) => (
             <button key={l} onClick={() => setLang(l)} aria-pressed={lang === l}
               className={`px-2.5 py-1 ${lang === l ? "bg-slate-800 text-white" : "bg-white hover:bg-slate-50"}`}>{l === "en" ? "EN" : "한국어"}</button>
@@ -67,7 +71,7 @@ function AppInner() {
         </div>
         {health?.demo_reset_enabled && (
           <Btn kind="danger" onClick={async () => {
-            if (confirm("Delete ALL demo data (delegations, receipts, disputes)?")) { await api("/demo/reset", { method: "POST" }); setDelegationId(""); refresh(); }
+            if (confirm(t("Delete ALL demo data (delegations, receipts, disputes)?"))) { await api("/demo/reset", { method: "POST" }); setDelegationId(""); refresh(); }
           }}>Reset demo data</Btn>
         )}
       </header>
